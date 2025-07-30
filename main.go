@@ -16,7 +16,7 @@ func main() {
 			}
 		}
 		if nubmber == 1 {
-			fmt.Println("唯一的数字是sss%:", result)
+			fmt.Println("唯一的数字是%:", result)
 			break
 		}
 
