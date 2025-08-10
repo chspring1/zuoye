@@ -1,0 +1,35 @@
+{
+    // VS Code 调试配置，支持 Go、Chrome、Bash 脚本
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Go: 当前文件",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${file}"
+        },
+        {
+            "name": "Go: 当前包",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${fileDirname}"
+        },
+        {
+            "name": "Launch Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:8080",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "bashdb",
+            "request": "launch",
+            "name": "Bash-Debug (选择脚本)",
+            "cwd": "${workspaceFolder}",
+            "program": "${command:SelectScriptName}",
+            "args": []
+        }
+    ]
+}
