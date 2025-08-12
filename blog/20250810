@@ -1,4 +1,26 @@
 1. 在 Go 语言中 select 的用法
+select语句有什么用途？
+select 是 Go 中处理多通道（channel）操作的控制结构，核心用途包括：
+
+
+
+多路复用（监听多个 channel）：
+
+同时等待多个 channel 的读写操作，随机选择一个就绪的 case 执行（如 case <-ch1 或 case ch2 <- data），避免阻塞。
+
+超时控制：
+
+结合 time.After 实现超时机制，例如：select { case <-dataChan: ...; case <-time.After(3*time.Second): ... }。
+
+非阻塞操作：
+
+添加 default 分支实现非阻塞，当无 channel 就绪时立即执行 default（如用于检查 channel 状态）。
+
+程序退出与错误处理：
+
+监听退出信号 channel（如 <-doneChan），实现优雅终止。
+
+检测 channel 关闭（如 case v, ok := <-ch 中 ok 标识状态）。
 select 用于同时监听多个 channel，实现多路复用、超时控制等并发场景。
 示例：
 ```go
