@@ -1,0 +1,42 @@
+1. 在 Go 语言中 select 的用法
+select 用于同时监听多个 channel，实现多路复用、超时控制等并发场景。
+示例：
+```go
+ch1 := make(chan int)
+ch2 := make(chan int)
+go func() { ch1 <- 1 }()
+go func() { ch2 <- 2 }()
+select {
+case v := <-ch1:
+	fmt.Println("收到 ch1:", v)
+case v := <-ch2:
+	fmt.Println("收到 ch2:", v)
+case <-time.After(time.Second):
+	fmt.Println("超时")
+}
+```
+
+2. Go 语言的断言
+类型断言用于判断接口变量的具体类型。
+示例：
+```go
+var i interface{} = "hello"
+str, ok := i.(string)
+if ok {
+	fmt.Println("i 是 string 类型，值为：", str)
+} else {
+	fmt.Println("i 不是 string 类型")
+}
+```
+
+3. Go 语言反射
+反射用于在运行时动态获取变量的类型和值，常用 reflect 包。
+示例：
+```go
+import "reflect"
+var x int = 10
+t := reflect.TypeOf(x)
+v := reflect.ValueOf(x)
+fmt.Println("类型：", t)
+fmt.Println("值：", v.Int())
+```
