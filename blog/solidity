@@ -22,3 +22,13 @@ public：表示函数可以被外部调用，也可以被合约内部调用。�
 
 private：表示函数只能被合约内部调用，外部无法访问。适用于不希望被外部调用的内部逻辑。
 
+constructor（构造函数）是一种特殊的函数，用于在合约部署时进行初始化操作。
+constructor 只会在合约部署时自动执行一次，不能被再次调用。
+通常用于设置合约的初始状态，比如初始化变量、设置合约拥有者等。
+语法示例：
+contract MyContract {
+    address public owner;
+    constructor() {
+        owner = msg.sender; // 部署者成为合约拥有者
+    }
+}
