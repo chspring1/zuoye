@@ -1,0 +1,21 @@
+1、ERC20的规范
+ERC20 是以太坊上最常用的代币标准，规定了代币的基本功能和接口，包括：
+- totalSupply()：返回代币总量
+- balanceOf(address)：查询某地址余额
+- transfer(address,uint256)：转账
+- approve(address,uint256)：授权他人代币额度
+- transferFrom(address,address,uint256)：代理转账
+- allowance(address,address)：查询授权额度
+
+2、allowance 机制
+allowance 是一个嵌套 mapping，结构如下：
+mapping(address => mapping(address => uint256)) public allowance;
+含义：
+- allowance[owner][spender] 表示 owner 授权给 spender 的代币额度。
+应用场景：如 DEX、DeFi 协议中，用户授权合约代为操作自己的代币。
+
+3、为什么用整型，避免浮点运算
+区块链和 Solidity 不支持浮点数，所有金额和运算都用整数（如最小单位 wei），这样可以避免精度丢失和计算误差，保证安全和一致性。
+
+4、实际应用
+ERC20 代币广泛用于 ICO、DeFi、NFT、游戏等场景，是以太坊生态的基础。

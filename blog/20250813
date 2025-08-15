@@ -62,7 +62,8 @@ payload 就是“你想让链上程序处理的具体数据”，比如合约调
 在 EVM 层，payload 也可以指 call、delegatecall 等指令调用时附带的数据内容。
 
 （storage）每个账户在EVM中都有一个键值对形式的持久化存储，其中的key和value的长度都是256位，称之为存储空间
-
+memory（内存）是EVM中的临时存储区域，用于存放函数调用中的参数和局部变量。内存是可变的，函数执行结束后会被清空。
+storage（存储）是EVM中的永久存储区域，用于存放合约的状态变量。存储是持久的，合约部署后数据会一直保留。
 storage gas开销大
 memory gas开销小
 stack gas几乎是免费使用，但数量有限制
