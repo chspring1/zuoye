@@ -1,0 +1,101 @@
+DAO 的全称是 Decentralized Autonomous Organization，中文意思是“去中心化自治组织”
+The DAO 是以太坊历史上第一个大型去中心化自治组织（Decentralized Autonomous Organization，DAO）的名字。
+THE DAO 发行了大量的 DAO 代币，成为当时最大的众筹项目之一，吸引了大量投资者参与。
+它于2016年上线，是一个基于智能合约的投资基金，允许持币人投票决定资金的使用方向。
+The DAO 因安全漏洞被黑客攻击，导致以太坊社区进行了一次著名的硬分叉，分裂为现在的 Ethereum（ETH）和 Ethereum Classic（ETC）。
+这个事件对区块链治理和智能合约安全有深远影响。
+
+
+
+DAC 的全称是 Decentralized Autonomous Corporation，中文意思是“去中心化自治公司”。
+它和 DAO（去中心化自治组织）类似，都是基于区块链和智能合约实现的自治实体，
+但 DAC 更强调像公司一样有盈利目标、股东和分红机制，而 DAO 更偏向于社区自治和共同治理
+
+
+storage 永久的存储空间
+memory 临时的存储空间，函数调用结束后会被清除
+
+Solidity源文件布局--import
+import 语句用于引入其他 Solidity 文件或库，支持相对路径和绝对路径。
+import "path/to/Contract.sol"; // 引入指定路径的合约
+import "https://example.com/Contract.sol"; // 引入远程合约
+import {ContractA, ContractB} from "path/to/Contracts.sol"; // 引入指定合约
+import "path/to/Library.sol"; // 引入指定库
+import "Library.sol" as Lib; // 引入并重命名库
+import "Library.sol" as *; // 引入库中的所有内容
+import * as Lib from "Library.sol"; // 引入库中的所有内容并重命名
+import { symbol1 as alias , symbol2 } from "Library.sol"; // 引入库中的指定内容并重命名
+ 
+payable 地址是可以发送ether的地址，通常用于接收以太币或代币转账。普通的address类型不能接收以太币。
+允许payable address 到address隐式转换，反之则不行。  
+
+合约的 receive() 函数是专门用于接收以太币的函数，必须标记为 payable。
+如果合约没有 receive() 函数，当接收到以太币时会触发 fallback() 函数。
+
+地址类型成员变量
+<address>.balance：返回地址的以太币余额。
+<address payable>.transfer(value)：向指定地址转账指定数量的以太币。//谁调用这个函数，谁向合约指定的地址转账
+<address payable>.send(value)：向指定地址发送以太币，返回布尔值表示是否成功。//当前调用者向合约指定的地址发送以太币
+<address>.call{value: value}("data")：调用指定地址的函数，并发送以太币。返回布尔值表示是否成功。
+<address>.delegatecall("data")：在指定地址的上下文中执行代码，返回布尔值表示是否成功。//代理调用
+<address>.staticcall("data")：在指定地址的上下文中执行只读代码，返回布尔值表示是否成功。//静态调用
+ // 查询合约自身余额
+    function getBalance() public view returns (uint) {
+        return address(this).balance;
+    }
+// 向合约转账，必须加 payable
+    receive() external payable {}
+
+ // 向指定地址转账
+ function sendEther(address payable to, uint amount) public {
+        require(address(this).balance >= amount, "余额不足");
+        to.transfer(amount); // 转账
+    }
+
+回退函数 fallback 是一个默认的异常处理函数，找不到执行的函数时会被调用。
+
+
+solidity异常处理机制
+Solidity 提供了多种异常处理机制，主要用于保证合约安全和数据一致性：
+
+1. require(condition, message)
+    - 用于检查外部输入、权限、余额等条件。
+    - 条件不满足时抛出异常，回滚状态，退还剩余 gas。
+    - 示例：
+    ```solidity
+    require(msg.sender == owner, "Only owner can call this");
+    ```
+
+2. assert(condition)
+    - 用于检查内部不变量或严重错误。
+    - 条件不满足时抛出异常，消耗所有剩余 gas，回滚状态。
+    - 示例：
+    ```solidity
+    assert(balance >= 0);
+    ```
+
+3. revert(message)
+    - 主动触发异常，回滚状态，退还剩余 gas。
+    - 可用于复杂条件判断或自定义错误信息。
+    - 示例：
+    ```solidity
+    if (x < 10) {
+         revert("x must be >= 10");
+    }
+    ```
+
+4. try/catch（Solidity 0.6.0+）
+    - 用于捕获外部合约调用或 new 创建合约时的异常。
+    - 示例：
+    ```solidity
+    try otherContract.someFunction() returns (uint result) {
+         // 调用成功
+    } catch {
+         // 调用失败，处理异常
+    }
+    ```
+
+异常处理的作用：
+- 保证合约状态安全，防止非法操作。
+- 发生异常时自动回滚，保护用户资产。
+- 提供友好的错误提示，便于调试和排查问题。
