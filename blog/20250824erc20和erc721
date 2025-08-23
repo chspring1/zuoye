@@ -1,0 +1,131 @@
+【ERC721接口】
+
+1、balanceOf(address owner) 
+查询某地址拥有的 NFT 数量。
+
+2、ownerOf(uint256 tokenId)
+查询某个token的所有者地址
+
+3、safeTransferFrom(address from, address to, uint256 tokenId)
+转移token至指定的账户
+
+4、safeTransferFrom(address from, address to, uint256 tokenId, bytes data)
+转移token至指定的账户(可以附加一段数据)
+
+5、transferFrom(address from, address to, uint256 tokenId)
+将指定 tokenId 的 NFT 从 from 地址转移到 to 地址。
+只有 NFT 拥有者或被授权的地址才能调用。
+不会检查接收方是否为合约，也不会调用 onERC721Received（所以如果 to 是合约且未实现 ERC721 接口，NFT 可能会丢失）
+
+6、approve(address to, uint256 tokenId)
+NFT 拥有者可以授权某个地址（to）有权转移指定的 tokenId。
+被授权人可以调用 transferFrom 或 safeTransferFrom，把该 NFT 转给别人。
+每次授权会覆盖上一次授权（同一个 tokenId 只能授权一个地址）。
+
+7、getApproved(uint256 tokenId)
+查询某个 tokenId 当前被授权可以转移该 NFT 的地址。
+如果没有授权，则返回零地址（0x000...0）。
+
+
+8、setApprovalForAll(address operator, bool approved)
+NFT 拥有者可以一次性授权某个地址（operator）管理自己“所有”的 NFT。
+approved 为 true 表示授权，false 表示取消授权。
+被授权人可以管理和转移你所有的 NFT，无需单独 approve 每个 tokenId。
+
+
+8、isApprovedForAll(address owner, address operator)
+查询 operator 是否被 owner 批量授权管理其所有 NFT。
+operator 指的是“被授权可以批量管理你所有 NFT 的地址”。
+owner 指的是 NFT 的拥有者
+返回 true 表示已授权，false 表示未授权。
+
+9、supportsInterface(bytes4 interfaceId) // 兼容ERC165
+用于判断合约是否实现了某个接口（如 ERC721、ERC721Metadata、ERC721Enumerable 等）。
+返回 true 表示支持，false 表示不支持。
+用法示例： supportsInterface(0x80ac58cd) // 检查是否支持 ERC721（0x80ac58cd 是 ERC721 的接口ID）
+
+常见用途：前端、合约或第三方平台可以用它自动检测合约是否兼容某些标准，提升合约的可组合性和安全性。
+
+【ERC721事件】
+
+event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)
+作用：
+
+每当 NFT（tokenId）从 from 地址转移到 to 地址时，都会触发该事件。
+方便前端、区块链浏览器、第三方服务追踪 NFT 的转移历史。
+常见用途：
+
+监听 NFT 的转账、铸造（from 为 0 地址）、销毁（to 为 0 地址）等操作。
+用于展示 NFT 的所有权变更记录。
+event 监听的内容（即链上事件日志）可以在以下地方查看：
+
+区块链浏览器（如 Etherscan、OKLink 等）
+在合约页面的“Events”或“交易详情”中，可以看到 Transfer、Approval 等事件的历史记录和参数。
+
+前端 DApp
+通过 Web3.js、Ethers.js 等库，前端可以用合约的接口监听事件，实时获取事件内容。例如：
+contract.on('Transfer', (from, to, tokenId, event) => {
+  // 这里可以处理转账事件
+});
+后端服务
+用 web3/ethers 等库写脚本监听事件，或用 TheGraph 等服务做事件索引。
+
+本地开发环境（如 Hardhat、Truffle）
+在测试或本地链运行时，控制台会输出事件日志，也可以用脚本监听。
+
+event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId)
+每当 NFT 拥有者调用 approve 授权某个地址可以转移指定的 tokenId 时，都会触发该事件。
+
+event ApprovalForAll(address indexed owner, address indexed operator, bool approved)
+
+approved 为 true 表示授权，false 表示取消授权。
+这个事件可以让前端、区块链浏览器等实时追踪批量授权的变化。
+
+
+【ERC20接口】
+
+1、totalSupply()
+查询当前合约发行的代币总量（ERC20）或 NFT 总数（ERC721Enumerable）。
+返回一个 uint256 类型的总数。
+
+2、balanceOf(address account)
+ERC20：查询某地址拥有的代币数量。
+ERC721：查询某地址拥有的 NFT 数量。
+用法示例（ERC20）： balanceOf(0x123...abc) // 返回该地址拥有的代币数量
+
+用法示例（ERC721）： balanceOf(0x123...abc) // 返回该地址拥有的 NFT 数量
+
+
+3、transfer(address to, uint256 amount)
+
+将指定数量的代币（amount）从调用者账户转账到 to 地址。
+只能由代币持有者本人调用。
+
+4、allowance(address owner, address spender)
+查询 spender（被授权人）还能从 owner（授权人）账户中花费多少代币。
+返回一个 uint256 类型的剩余额度。
+
+5、approve(address spender, uint256 amount)
+允许调用者授权 spender（被授权人）可以最多花费自己账户中的 amount 个代币。
+授权额度可被后续 approve 覆盖。
+
+6、transferFrom(address from, address to, uint256 amount)
+允许 spender（被授权人）从 from（授权人）账户转出 amount 个代币到 to。
+前提是 from 已通过 approve 授权给 spender 足够额度。
+
+
+【ERC20事件】
+
+event Transfer(address indexed from, address indexed to, uint256 value)
+event Approval(address indexed owner, address indexed spender, uint256 value)
+
+
+
+ERC20 只能操作“合约发行的代币”，不能直接操作 ETH。
+如果你要让合约收/转 ETH，需要用 Solidity 的原生 payable、transfer、call 等语法单独实现。
+总结：ERC20 只管“代币”，不管 ETH。ETH 的收发要用原生语法，和 ERC20 没有直接关系。
+
+ERC20 是“同质化代币”标准，适合表示可分割、可互换的资产（如USDT、DAI等）。
+ERC721 是“非同质化代币（NFT）”标准，适合表示独一无二、不可分割的资产（如数字藏品、门票、游戏道具等）。
+两者都是“合约标准”，都不涉及 ETH 的收发，只定义了各自资产的操作接口。
+ERC20 代表“代币”，ERC721 代表“唯一的 token（NFT）”，本质上都是“合约里的资产”，只是属性和用途不同
